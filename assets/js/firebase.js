@@ -60,20 +60,19 @@ if (signUp) {
                 });
             });
         setTimeout(logIn, 4000)
-
-
     })
 }
 //listens for an authentication sign in and updates uid so we can retrieve stored info
 firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            uid = user.uid
-            retrieve()
-        } else {
-            console.log('not logged in')
-        }
-    })
-    //retrieves the stored favorite info and displays it on html 
+    if (user) {
+        uid = user.uid
+        retrieve()
+    } else {
+        console.log('not logged in')
+    }
+})
+
+//retrieves the stored favorite info and displays it on html 
 function retrieve() {
     firebase.database().ref('/users/' + uid).once('value').then(function(snapshot) {
         console.log(snapshot.val())
@@ -93,17 +92,19 @@ function retrieve() {
 }
 //an onclick function that makes an ajax call from the favorites
 $('body').on('click', '#populate', function() {
-        initial(newAdd, newZip)
-    })
-    //an onclick function that will delete the favorites from the firebase database
+    initial(newAdd, newZip)
+})
+
+//an onclick function that will delete the favorites from the firebase database
 $('body').on('click', '#delete', function() {
-        firebase.database().ref('/users/' + uid).update({
-            favoriteAdd: null,
-            favoriteZip: null
-        })
-        $('#favoriteDisplay').html('')
+    firebase.database().ref('/users/' + uid).update({
+        favoriteAdd: null,
+        favoriteZip: null
     })
-    //an onclick function that will update firebase database with favorites information
+    $('#favoriteDisplay').html('')
+})
+
+//an onclick function that will update firebase database with favorites information
 $('body').on('click', '#favorites', function() {
     console.log('fav button working')
     firebase.database().ref('/users/' + uid).update({
